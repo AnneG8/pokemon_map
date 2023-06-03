@@ -4,6 +4,8 @@ import json
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
+from pokemon_entities.models import Pokemon
+
 
 MOSCOW_CENTER = [55.751244, 37.618423]
 DEFAULT_IMAGE_URL = (
@@ -39,13 +41,16 @@ def show_all_pokemons(request):
                 pokemon['img_url']
             )
 
+    pokemon_types = Pokemon.objects.all()
     pokemons_on_page = []
-    for pokemon in pokemons:
-        pokemons_on_page.append({
-            'pokemon_id': pokemon['pokemon_id'],
-            'img_url': pokemon['img_url'],
-            'title_ru': pokemon['title_ru'],
-        })
+    for pokemon in pokemon_types:
+        page_pokemon = {
+            'pokemon_id': pokemon.id,
+            'title_ru': pokemon.title,
+        }
+        if pokemon.image:
+            page_pokemon['img_url'] = request.build_absolute_uri(pokemon.image.url)
+        pokemons_on_page.append(page_pokemon)
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
