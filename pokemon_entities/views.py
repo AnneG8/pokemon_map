@@ -64,8 +64,8 @@ def get_pokemon_dict(request, pokemon):
         'pokemon_id': pokemon.id,
         'img_url': get_absolute_url(request, pokemon),
         'title_ru': pokemon.title,
-        'title_en': '',
-        'title_jp': '',
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
         'description': pokemon.description,
         'next_evolution': '',
         'previous_evolution': ''
