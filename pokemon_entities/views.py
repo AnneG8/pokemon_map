@@ -66,7 +66,7 @@ def get_pokemon_dict(request, pokemon):
         'title_ru': pokemon.title,
         'title_en': '',
         'title_jp': '',
-        'description': '',
+        'description': pokemon.description,
         'next_evolution': '',
         'previous_evolution': ''
     }
