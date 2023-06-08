@@ -2,11 +2,11 @@ from django.db import models  # noqa F401
 from django.utils import timezone
 
 class Pokemon(models.Model):
-    title = models.CharField(max_length=200)
-    title_en = models.CharField(max_length=200)
-    title_jp = models.CharField(max_length=200)
-    image = models.ImageField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
+    title = models.CharField('Имя покемона', max_length=200)
+    title_en = models.CharField('Имя на английском', max_length=200)
+    title_jp = models.CharField('Имя на японском', max_length=200)
+    image = models.ImageField('Изображение', null=True, blank=True)
+    description = models.TextField('Описание', null=True, blank=True)
     previous_evolution = models.ForeignKey(
         'self',
         verbose_name='Из кого эволюционирует',
@@ -20,20 +20,29 @@ class Pokemon(models.Model):
 
 
 class PokemonEntity(models.Model):
-    pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE)
+    pokemon = models.ForeignKey(
+        Pokemon,
+        verbose_name='Покемон',
+        on_delete=models.CASCADE)
 
-    lat = models.FloatField()
-    lon = models.FloatField()
+    lat = models.FloatField('Ширина')
+    lon = models.FloatField('Длина')
 
-    appeared_at = models.DateTimeField(default=timezone.now, blank=True)
-    disappeared_at = models.DateTimeField(default=timezone.now, blank=True)
+    appeared_at = models.DateTimeField(
+        'Когда появился', 
+        default=timezone.now, 
+        blank=True)
+    disappeared_at = models.DateTimeField(
+        'Когда исчезнет', 
+        default=timezone.now, 
+        blank=True)
 
-    level = models.IntegerField(null=True, blank=True)
+    level = models.IntegerField('Уровень', default=1)
 
-    health = models.IntegerField(null=True, blank=True)
-    strength = models.IntegerField(null=True, blank=True)
-    defence = models.IntegerField(null=True, blank=True)
-    stamina = models.IntegerField(null=True, blank=True)
+    health = models.IntegerField('Здоровье', null=True, blank=True)
+    strength = models.IntegerField('Сила', null=True, blank=True)
+    defence = models.IntegerField('Защита', null=True, blank=True)
+    stamina = models.IntegerField('Выносливость', null=True, blank=True)
 
 
 
