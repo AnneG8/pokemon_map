@@ -1,15 +1,16 @@
 from django.db import models  # noqa F401
 from django.utils import timezone
 
+
 class Pokemon(models.Model):
     title = models.CharField('Имя покемона', max_length=200)
     title_en = models.CharField(
-        'Имя на английском', 
-        max_length=200, 
+        'Имя на английском',
+        max_length=200,
         null=True, blank=True)
     title_jp = models.CharField(
-        'Имя на японском', 
-        max_length=200, 
+        'Имя на японском',
+        max_length=200,
         null=True, blank=True)
     image = models.ImageField('Изображение', null=True, blank=True)
     description = models.TextField('Описание', null=True, blank=True)
@@ -34,10 +35,10 @@ class PokemonEntity(models.Model):
     lon = models.FloatField('Длина')
 
     appeared_at = models.DateTimeField(
-        'Когда появился', 
+        'Когда появился',
         default=timezone.now)
     disappeared_at = models.DateTimeField(
-        'Когда исчезнет', 
+        'Когда исчезнет',
         default=timezone.now)
 
     level = models.IntegerField('Уровень', default=1)
@@ -46,7 +47,3 @@ class PokemonEntity(models.Model):
     strength = models.IntegerField('Сила', null=True, blank=True)
     defence = models.IntegerField('Защита', null=True, blank=True)
     stamina = models.IntegerField('Выносливость', null=True, blank=True)
-
-
-
-
