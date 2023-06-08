@@ -60,16 +60,22 @@ def get_pokemon_map(request, pokemon_id=None):
 
 
 def get_pokemon_dict(request, pokemon):
-    return {
+    pokemon_dict = {
         'pokemon_id': pokemon.id,
         'img_url': get_absolute_url(request, pokemon),
         'title_ru': pokemon.title,
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
-        'next_evolution': '',
-        'previous_evolution': ''
+        'next_evolution': ''
     }
+    if pokemon.previous_evolution:
+        pokemon_dict['previous_evolution'] = {
+            'pokemon_id': pokemon.previous_evolution.id,
+            'title_ru': pokemon.previous_evolution.title,
+            'img_url': get_absolute_url(request, pokemon.previous_evolution),
+        }
+    return pokemon_dict
 
 
 def show_all_pokemons(request):
