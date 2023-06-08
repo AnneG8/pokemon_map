@@ -11,6 +11,7 @@ class Pokemon(models.Model):
         'self',
         verbose_name='Из кого эволюционирует',
         on_delete=models.SET_NULL,
+        related_name='next_evolutions',
         null=True,
         blank=True)
 
