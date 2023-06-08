@@ -3,8 +3,14 @@ from django.utils import timezone
 
 class Pokemon(models.Model):
     title = models.CharField('Имя покемона', max_length=200)
-    title_en = models.CharField('Имя на английском', max_length=200)
-    title_jp = models.CharField('Имя на японском', max_length=200)
+    title_en = models.CharField(
+        'Имя на английском', 
+        max_length=200, 
+        null=True, blank=True)
+    title_jp = models.CharField(
+        'Имя на японском', 
+        max_length=200, 
+        null=True, blank=True)
     image = models.ImageField('Изображение', null=True, blank=True)
     description = models.TextField('Описание', null=True, blank=True)
     previous_evolution = models.ForeignKey(
@@ -12,8 +18,7 @@ class Pokemon(models.Model):
         verbose_name='Из кого эволюционирует',
         on_delete=models.SET_NULL,
         related_name='next_evolutions',
-        null=True,
-        blank=True)
+        null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -30,12 +35,10 @@ class PokemonEntity(models.Model):
 
     appeared_at = models.DateTimeField(
         'Когда появился', 
-        default=timezone.now, 
-        blank=True)
+        default=timezone.now)
     disappeared_at = models.DateTimeField(
         'Когда исчезнет', 
-        default=timezone.now, 
-        blank=True)
+        default=timezone.now)
 
     level = models.IntegerField('Уровень', default=1)
 
