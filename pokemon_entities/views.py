@@ -22,18 +22,6 @@ def get_absolute_url(request, pokemon):
     return img_url
 
 
-def get_pokemon_entitys(pokemon_id=None):
-    timezone.activate('Europe/Moscow')
-    q_filter = (Q(appeared_at__lte=timezone.localtime(timezone.now())) &
-                Q(disappeared_at__gte=timezone.localtime(timezone.now())))
-    if pokemon_id:
-        q_filter = q_filter & Q(pokemon__id=int(pokemon_id))
-
-    pokemon_entitys = PokemonEntity.objects\
-        .select_related('pokemon').filter(q_filter)
-    return pokemon_entitys
-
-
 def add_pokemon(folium_map, lat, lon, image_url):
     icon = folium.features.CustomIcon(
         image_url,
@@ -47,8 +35,7 @@ def add_pokemon(folium_map, lat, lon, image_url):
     ).add_to(folium_map)
 
 
-def get_pokemon_map(request, pokemon_id=None):
-    pokemon_entitys = get_pokemon_entitys(pokemon_id)
+def get_pokemon_map(request, pokemon_entitys):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemon_entitys:
         add_pokemon(
@@ -86,7 +73,12 @@ def get_pokemon_dict(request, pokemon):
 
 
 def show_all_pokemons(request):
-    folium_map = get_pokemon_map(request)
+    q_filter = (Q(appeared_at__lte=timezone.localtime()) &
+                Q(disappeared_at__gte=timezone.localtime()))
+
+    pokemon_entitys = PokemonEntity.objects\
+        .select_related('pokemon').filter(q_filter)
+    folium_map = get_pokemon_map(request, pokemon_entitys)
 
     pokemon_types = Pokemon.objects.all()
     pokemons_on_page = []
@@ -100,9 +92,14 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    folium_map = get_pokemon_map(request, pokemon_id)
-
+    q_filter = (Q(appeared_at__lte=timezone.localtime()) &
+                Q(disappeared_at__gte=timezone.localtime()))
     pokemon = get_object_or_404(Pokemon, id=int(pokemon_id))
+    pokemon_entitys = pokemon.entities\
+        .select_related('pokemon').filter(q_filter)
+
+    folium_map = get_pokemon_map(request, pokemon_entitys)
+
     requested_pokemon = get_pokemon_dict(request, pokemon)
 
     return render(request, 'pokemon.html', context={
