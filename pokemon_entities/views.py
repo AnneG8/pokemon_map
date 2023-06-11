@@ -22,27 +22,17 @@ def get_absolute_url(request, pokemon):
     return img_url
 
 
-def add_pokemon(folium_map, lat, lon, image_url):
-    icon = folium.features.CustomIcon(
-        image_url,
-        icon_size=(50, 50),
-    )
-    folium.Marker(
-        [lat, lon],
-        # Warning! `tooltip` attribute is disabled intentionally
-        # to fix strange folium cyrillic encoding bug
-        icon=icon,
-    ).add_to(folium_map)
-
-
 def get_pokemon_map(request, pokemon_entitys):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemon_entitys:
-        add_pokemon(
-            folium_map, pokemon_entity.lat,
-            pokemon_entity.lon,
-            get_absolute_url(request, pokemon_entity.pokemon)
+        icon = folium.features.CustomIcon(
+            get_absolute_url(request, pokemon_entity.pokemon),
+            icon_size=(50, 50),
         )
+        folium.Marker(
+            [pokemon_entity.lat, pokemon_entity.lon],
+            icon=icon,
+        ).add_to(folium_map)
     return folium_map
 
 
@@ -63,7 +53,6 @@ def get_pokemon_dict(request, pokemon):
         }
     next_evolution = pokemon.next_evolutions.first()
     if next_evolution:
-        #some_next_evolution = next_evolutions.first()
         pokemon_dict['next_evolution'] = {
             'pokemon_id': next_evolution.id,
             'title_ru': next_evolution.title,
