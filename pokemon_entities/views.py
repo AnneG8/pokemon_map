@@ -62,8 +62,8 @@ def get_pokemon_dict(request, pokemon):
 
 
 def show_all_pokemons(request):
-    q_filter = (Q(appeared_at__lte=timezone.localtime()) &
-                Q(disappeared_at__gte=timezone.localtime()))
+    now = timezone.localtime()
+    q_filter = (Q(appeared_at__lte=now) & Q(disappeared_at__gte=now))
 
     pokemon_entitys = PokemonEntity.objects\
         .select_related('pokemon').filter(q_filter)
@@ -81,14 +81,14 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    q_filter = (Q(appeared_at__lte=timezone.localtime()) &
-                Q(disappeared_at__gte=timezone.localtime()))
+    now = timezone.localtime()
+    q_filter = (Q(appeared_at__lte=now) & Q(disappeared_at__gte=now))
+
     pokemon = get_object_or_404(Pokemon, id=int(pokemon_id))
     pokemon_entitys = pokemon.entities\
         .select_related('pokemon').filter(q_filter)
 
     folium_map = get_pokemon_map(request, pokemon_entitys)
-
     requested_pokemon = get_pokemon_dict(request, pokemon)
 
     return render(request, 'pokemon.html', context={
