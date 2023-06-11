@@ -61,13 +61,13 @@ def get_pokemon_dict(request, pokemon):
             'title_ru': pokemon.previous_evolution.title,
             'img_url': get_absolute_url(request, pokemon.previous_evolution),
         }
-    next_evolutions = Pokemon.objects.filter(previous_evolution=pokemon)
-    if next_evolutions:
-        some_next_evolution = next_evolutions[0]
+    next_evolution = pokemon.next_evolutions.first()
+    if next_evolution:
+        #some_next_evolution = next_evolutions.first()
         pokemon_dict['next_evolution'] = {
-            'pokemon_id': some_next_evolution.id,
-            'title_ru': some_next_evolution.title,
-            'img_url': get_absolute_url(request, some_next_evolution),
+            'pokemon_id': next_evolution.id,
+            'title_ru': next_evolution.title,
+            'img_url': get_absolute_url(request, next_evolution),
         }
     return pokemon_dict
 
