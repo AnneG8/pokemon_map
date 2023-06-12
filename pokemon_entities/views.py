@@ -2,7 +2,6 @@ import folium
 
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.db.models import Q
 
 from pokemon_entities.models import Pokemon, PokemonEntity
 
@@ -63,10 +62,9 @@ def get_pokemon_dict(request, pokemon):
 
 def show_all_pokemons(request):
     now = timezone.localtime()
-    q_filter = (Q(appeared_at__lte=now) & Q(disappeared_at__gte=now))
-
     pokemon_entitys = PokemonEntity.objects\
-        .select_related('pokemon').filter(q_filter)
+        .select_related('pokemon')\
+        .filter(appeared_at__lte=now, disappeared_at__gte=now)
     folium_map = get_pokemon_map(request, pokemon_entitys)
 
     pokemon_types = Pokemon.objects.all()
@@ -82,11 +80,10 @@ def show_all_pokemons(request):
 
 def show_pokemon(request, pokemon_id):
     now = timezone.localtime()
-    q_filter = (Q(appeared_at__lte=now) & Q(disappeared_at__gte=now))
-
     pokemon = get_object_or_404(Pokemon, id=int(pokemon_id))
     pokemon_entitys = pokemon.entities\
-        .select_related('pokemon').filter(q_filter)
+        .select_related('pokemon')\
+        .filter(appeared_at__lte=now, disappeared_at__gte=now)
 
     folium_map = get_pokemon_map(request, pokemon_entitys)
     requested_pokemon = get_pokemon_dict(request, pokemon)
